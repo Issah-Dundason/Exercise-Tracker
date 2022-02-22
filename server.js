@@ -50,7 +50,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   } else {
     date = new Date(date).toDateString();
   }
-  const userFinder = User.findById(req.params._id).select("-__v");
+  const userFinder = User.findById(req.params._id);
   userFinder.exec((err, user) => {
     if(err) {
       console.log(err);
@@ -81,7 +81,7 @@ app.get('/api/users/:_id/logs', (req, res) => {
   let from = req.query.from;
   let to = req.query.to;
   let limit = req.query.limit;
-  User.findById(req.params._id).select("-__v").exec((err, user) => {
+  User.findById(req.params._id).exec((err, user) => {
     if(err) {
       console.log(err);
     } else {
@@ -102,9 +102,10 @@ app.get('/api/users/:_id/logs', (req, res) => {
             exercises = exercises.limit(Number(limit));
           }
           res.json({
-            ...user,
+            username: user.username,
+            _id : user._id,
             count : exercises.length,
-            logs : exercises
+            log : exercises
           });
         }
       });
