@@ -40,3 +40,34 @@ app.get('/api/users', (req, res) => {
     }
   });
 })
+
+
+app.post('/api/users/:_id/exercises', (req, res) => {
+  let {description, duration, date} = req.body;
+  if(!date) {
+    date = new Date().toDateString();
+  }
+  User.find({_id : req.params._id}, (err, user) => {
+    if(err) {
+      console.log(err);
+    } else {
+      Exercise.create({
+        username : user.username, 
+        description : description, 
+        duration : Number(duration), 
+        date : date}, (err, exercise) => {
+          if(err) {
+            console.log(err);
+          } else {
+            res.json({
+              username: user.username,
+              description: exercise.description,
+              duration: exercise.duration,
+              date: exercise.date,
+              _id: user._id
+            })
+          }
+        })
+    }
+  });
+})
