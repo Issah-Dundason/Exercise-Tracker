@@ -5,6 +5,7 @@ const cors = require('cors')
 const {Exercise, User}= require('./model.js');
 var bodyParser = require('body-parser');
 const { application } = require('express');
+const { json } = require('body-parser');
 require('dotenv').config()
 
 mongoose.connect(process.env.MONGO_URI);
@@ -46,13 +47,16 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   let {description, duration, date} = req.body;
   if(!date) {
     date = new Date().toDateString();
+  } else {
+    date = new Date().toDateString();
   }
-  User.findById({_id : req.params._id}, (err, user) => {
+  const userFinder = User.findById(req.params._id).select("-__v");
+  userFinder.exec((err, user) => {
     if(err) {
       console.log(err);
     } else {
       Exercise.create({
-        username : user.username, 
+        username : user._id,
         description : description, 
         duration : Number(duration), 
         date : date}, (err, exercise) => {
@@ -65,9 +69,9 @@ app.post('/api/users/:_id/exercises', (req, res) => {
               duration: exercise.duration,
               date: exercise.date,
               _id: user._id
-            })
+            });
           }
         })
     }
-  });
+  })
 })
