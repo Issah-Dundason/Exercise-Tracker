@@ -48,7 +48,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   if(!date) {
     date = new Date().toDateString();
   } else {
-    date = new Date().toDateString();
+    date = new Date(date).toDateString();
   }
   const userFinder = User.findById(req.params._id).select("-__v");
   userFinder.exec((err, user) => {
