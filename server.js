@@ -75,3 +75,39 @@ app.post('/api/users/:_id/exercises', (req, res) => {
     }
   })
 })
+
+
+app.get('/api/users/:_id/logs', (req, res) => {
+  let from = req.query.from;
+  let to = req.query.to;
+  let limit = req.query.limit;
+  User.findById(req.params._id).select("-__v").exec((err, user) => {
+    if(err) {
+      console.log(err);
+    } else {
+      Exercise
+      .find({username : user._id})
+      .select("+description +duration +date")
+      .exec((err, exercises) => {
+        if(err) {
+          console.log(err);
+        } else {
+          if(from) {
+            exercises = exercises.filter(exercise => new Date(exercise.date).getTime() >= new Date(from).getTime())
+          }
+          if(to) {
+            exercises = exercises.filter(exercise => new Date(exercise.date).getTime() <= new Date(to).getTime())
+          }
+          if(limit) {
+            exercises = exercises.limit(Number(limit));
+          }
+          res.json({
+            ...user,
+            count : exercises.length,
+            logs : exercises
+          });
+        }
+      });
+    }
+  });
+})
