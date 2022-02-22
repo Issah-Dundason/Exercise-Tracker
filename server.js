@@ -99,7 +99,7 @@ app.get('/api/users/:_id/logs', (req, res) => {
             exercises = exercises.filter(exercise => new Date(exercise.date).getTime() <= new Date(to).getTime())
           }
           if(limit) {
-            exercises = exercises.slice(0, Number(limit) - 1);
+            exercises = exercises.slice(0, Number(limit));
           }
           res.json({
             username: user.username,
