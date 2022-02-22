@@ -47,7 +47,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   if(!date) {
     date = new Date().toDateString();
   }
-  User.find({_id : req.params._id}, (err, user) => {
+  User.findById({_id : req.params._id}, (err, user) => {
     if(err) {
       console.log(err);
     } else {
